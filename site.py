@@ -8,12 +8,16 @@ import os
 TOKEN = os.environ.get("BOT_TOKEN", "")
 TELEGRAM_API = f"https://api.telegram.org/bot{TOKEN}"
 app = Flask(__name__)
+id = None
 
 def get_map(state : str = ["mazandaran"], type : list = ["rain", "total"]):
     data = []
+    send_message(id, "1")
     with open(f"config.json", "r") as f:
         data = json.loads(f.read())
         f.close()
+
+    send_message(id, "2")
 
     return data["models"][state][type[0]][type[1]]["request"]
 
@@ -25,12 +29,18 @@ def get_type(state: str = "mazandaran", model: str = "gfs", type: list = ["rain"
     link_list = []
     map_link = get_map(state, type)
 
+    send_message(id, "3")
+
     with open("config.json", "r") as f:
         config = json.loads(f.read())
         f.close()
 
+    send_message(id, "4")
+
     link = link+config["maps"][model]["link"]
     interval = interval if interval >= int(config["maps"][model]["interval"]) else int(config["maps"][model]["interval"])
+
+    send_message(id, "5")
 
     if len(config["maps"][model]["update_time"]) == 4:
         for i in range(0, tm+1, interval):
@@ -76,6 +86,7 @@ def get_type(state: str = "mazandaran", model: str = "gfs", type: list = ["rain"
                 
             link_list.append({"link": link+f"_{d_time.year}{d_time.month:02}{d_time.day:02}{run}_{i}_{map_link}.png", "run": i})
 
+    send_message(id, "6")
 
     return link_list
 
@@ -83,17 +94,22 @@ def get_type(state: str = "mazandaran", model: str = "gfs", type: list = ["rain"
 def get_web(state: str = "mazandaran", model: str = "gfs", type: list = ["rain","total"], tm: int = 24, interval: int = 6):
     #https://weather.us/model-charts/euro/2026022112/mazandaran/temperature/20260221-1300z.html
 
+    send_message(id, "7")
     with open("config.json", "r") as f:
         config = json.loads(f.read())
         f.close()
 
+    send_message(id, "8")
+
     link = "https://weather.us/model-charts/"+config["maps"][model]["web"]
     interval = interval if interval >= int(config["maps"][model]["interval"]) else int(config["maps"][model]["interval"])
 
+    send_message(id, "9")
     d = datetime.now()
     d_time = datetime.now()
     utimes = config["maps"][model]["update_time"]
     run = "00"
+    send_message(id, "10")
 
     if t(utimes[0][0], utimes[0][1]) <= d.time() < t(utimes[1][0], utimes[1][1]):
         run = "18"
@@ -121,12 +137,14 @@ def get_web(state: str = "mazandaran", model: str = "gfs", type: list = ["rain",
 
         link_lit.append({"link": f"{link}/{d.year}{d.month:02}{d.day:02}-{rr:02}00z.html", "run": i})
         
+    send_message(id, "11")
     return link_lit
 #---------------------------------------------------------
 
 def create_map(state: str = "mazandaran", model: str = "gfs", type: list = ["rain","total"], tm: int = 24, interval: int = 6):
+    send_message(id, "12")
     links = get_type(state,model,type,tm,interval)
-
+    send_message(id, "13")
     headers = [
         {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -174,20 +192,21 @@ def create_map(state: str = "mazandaran", model: str = "gfs", type: list = ["rai
             "Connection": "keep-alive"
         }
     ]
-
+    send_message(id, "14")
     for i in links:
         session = requests.Session()
         session.get("https://weather.us",headers=headers[1])
         session.get("https://img3.weather.us",headers=headers[2])
         session.get("https://img5.weather.us",headers=headers[3])
         session.get("https://img6.weather.us",headers=headers[4])
+        send_message(id, "15")
         
         headers[0]["Referer"] = i["link"]
-
+        send_message(id, "16")
         req = session.get(i["link"],headers=headers[0])
         with open("saves\\"+str(i["run"])+".png", "wb") as f:
             f.write(req.content)
-
+        send_message(id, "17")
         background = Image.open("saves\\"+str(i["run"])+".png")  
         overlay = Image.open(f"data\\{type[0]}_layout.png")
         borders = Image.open("data\\borders.png")
@@ -197,6 +216,7 @@ def create_map(state: str = "mazandaran", model: str = "gfs", type: list = ["rai
         combined2 = Image.alpha_composite(combined.convert("RGBA"), borders.convert("RGBA"))
 
         combined2.save("saves\\"+str(i["run"])+".png")
+        send_message(id, "18")
 
 #-------------------------- TELEGRAM BOT ----------------------------
 
@@ -220,6 +240,16 @@ def send_updates(chat_id, text):
             },
             files=files, 
             timeout=10 
+        )
+    except Exception as e:
+        print("Error sending message:", e)
+
+def send_message(chat_id, text):
+    try:
+        requests.post(f"{TELEGRAM_API}/sendMessage", json={
+            "chat_id": chat_id,
+            "text": text}, 
+            timeout=10
         )
     except Exception as e:
         print("Error sending message:", e)
@@ -249,6 +279,7 @@ def webhook():
         return
     
     if msg.type == "private":
+        id = msg.chat_id
         create_map()
         send_updates(msg.chat_id, "ok")
 
