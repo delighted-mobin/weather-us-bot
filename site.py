@@ -214,7 +214,7 @@ def create_map(state: str = "mazandaran", model: str = "gfs", type: list = ["rai
         headers[0]["Referer"] = i["link"]
         send_message(id, "16")
         req = session.get(i["link"],headers=headers[0])
-        send_message(id, str(req.content)[0,10])
+        return str(req.content)
         try:
             with open(str(i["run"])+".png", "wb") as f:
                 f.write(req.content)
@@ -287,7 +287,7 @@ def webhook():
     if msg.type == "private":
         global id
         id = msg.chat_id
-        create_map()
+        return create_map()
         send_updates(msg.chat_id, "ok")
 
     return jsonify(ok=True)
