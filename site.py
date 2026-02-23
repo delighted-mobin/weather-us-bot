@@ -279,6 +279,7 @@ def webhook():
         return
     
     if msg.type == "private":
+        global id
         id = msg.chat_id
         create_map()
         send_updates(msg.chat_id, "ok")
