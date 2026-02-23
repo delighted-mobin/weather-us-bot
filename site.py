@@ -200,7 +200,7 @@ def create_map(state: str = "mazandaran", model: str = "gfs", type: list = ["rai
 
 #-------------------------- TELEGRAM BOT ----------------------------
 
-def send_message(chat_id, text):
+def send_updates(chat_id, text):
 
     media = [
         {"type": "photo", "media": "attach://photo1"},
@@ -213,7 +213,7 @@ def send_message(chat_id, text):
     }
 
     try:
-        requests.post(f"{TELEGRAM_API}/sendMessage", json={
+        requests.post(f"{TELEGRAM_API}/sendMediaGroup", json={
             "chat_id": chat_id,
             "text": text, 
             "media": json.dumps(media)
@@ -249,7 +249,7 @@ def webhook():
     
     if msg.type == "private":
         create_map()
-        send_message(msg.chat_id, "ok")
+        send_updates(msg.chat_id, "ok")
 
     return jsonify(ok=True)
 
