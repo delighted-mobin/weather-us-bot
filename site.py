@@ -10,6 +10,16 @@ TELEGRAM_API = f"https://api.telegram.org/bot{TOKEN}"
 app = Flask(__name__)
 id = None
 
+def send_message(chat_id, text):
+    try:
+        requests.post(f"{TELEGRAM_API}/sendMessage", json={
+            "chat_id": chat_id,
+            "text": text}, 
+            timeout=10
+        )
+    except Exception as e:
+        print("Error sending message:", e)
+
 def get_map(state : str = ["mazandaran"], type : list = ["rain", "total"]):
     data = []
     send_message(id, "1")
@@ -204,12 +214,11 @@ def create_map(state: str = "mazandaran", model: str = "gfs", type: list = ["rai
         headers[0]["Referer"] = i["link"]
         send_message(id, "16")
         req = session.get(i["link"],headers=headers[0])
-        send_message(id, "1111")
+        send_message(id, req.status_code)
         try:
-            with open("3.png", "wb") as f:
+            with open(str(i["run"])+".png", "wb") as f:
                 f.write(req.content)
                 f.close()
-            send_message(id, "17")
         except Exception as e:
             send_message(id, e)
 
@@ -247,16 +256,6 @@ def send_updates(chat_id, text):
             },
             files=files, 
             timeout=10 
-        )
-    except Exception as e:
-        print("Error sending message:", e)
-
-def send_message(chat_id, text):
-    try:
-        requests.post(f"{TELEGRAM_API}/sendMessage", json={
-            "chat_id": chat_id,
-            "text": text}, 
-            timeout=10
         )
     except Exception as e:
         print("Error sending message:", e)
