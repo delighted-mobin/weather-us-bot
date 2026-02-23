@@ -229,6 +229,7 @@ def index():
     # Simple health check
     return "runned"
 
+
 @app.post("/")
 def webhook():
     update = request.get_json(silent=True) or {}
