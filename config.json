@@ -1,0 +1,133 @@
+{
+    "models" :        
+    {
+        "mazandaran": {
+            "rain":
+            {
+                "total": 
+                {
+                    "request": "15569_157",
+                    "web": "accumulated-precipitation"
+                },
+                "24h": 
+                {
+                    "request": "15569_63",
+                    "web": "precipitation-total"
+                },
+                "6h": 
+                {
+                    "request": "15569_83",
+                    "web": "precipitation-6h"
+                }
+            },
+
+            "temp":
+            {
+                "max_6h": 
+                {
+                    "request": "15569_147",
+                    "web": "max-temperature-6h"
+                },
+                "min_6h": 
+                {
+                    "request": "15569_148",
+                    "web": "min-temperature-6h"
+                }
+            }
+        }
+    },
+
+    "maps" :
+    {
+        "gfs": 
+        {
+            "link": "model_modusa",
+            "web": "standard",
+            "update_time": [
+                [3,30],
+                [9,30],
+                [13,30],
+                [21,30]
+            ],
+            "interval": 1
+        },
+
+        "ic-hd":
+        {
+            "link": "model_moddeuhd",
+            "web": "deu-hd",
+            "update_time": [
+                [2,45],
+                [8,45],
+                [14,45],
+                [20,45]
+            ],
+            "interval": 1
+        },
+
+        "ecmwf":
+        {
+            "link": "model_modez",
+            "web": "euro",
+            "update_time": [
+                [6,0],
+                [18,0]
+            ],
+            "interval": 1
+        },
+
+        "gfs-hd":
+        {
+            "link": "model_modgfs",
+            "web": "gfs-hd",
+            "update_time": [
+                [3,30],
+                [9,30],
+                [13,30],
+                [21,30]
+            ],
+            "interval": 1
+        },
+
+        "uk":
+        {
+            "link": "model_modgbr",
+            "web": "gbr",
+            "update_time": [
+                [6,50],
+                [18,50]
+            ],
+            "interval": 1
+        },
+
+        "ic":
+        {
+            "link": "model_moddeu",
+            "web": "german",
+            "update_time": [
+                [2,45],
+                [8,45],
+                [14,45],
+                [20,45]
+            ],
+            "interval": 1
+        },
+
+        "gem":
+        {
+            "link": "model_modcan",
+            "web": "can",
+            "update_time": [
+                [5,30],
+                [17,30]
+            ],
+            "interval": 3
+        }
+
+    },
+
+    "site" :
+    {
+        "path": ""
+    }
+}
