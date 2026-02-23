@@ -205,10 +205,11 @@ def create_map(state: str = "mazandaran", model: str = "gfs", type: list = ["rai
         send_message(id, "16")
         req = session.get(i["link"],headers=headers[0])
         send_message(id, "1111")
-        with open(str(i["run"])+".png", "wb") as f:
+        with open("3.png", "wb") as f:
             f.write(req.content)
+            f.close()
         send_message(id, "17")
-        
+
         background = Image.open(str(i["run"])+".png")  
         overlay = Image.open(f"data\\{type[0]}_layout.png")
         borders = Image.open("data\\borders.png")
