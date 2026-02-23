@@ -214,8 +214,7 @@ def create_map(state: str = "mazandaran", model: str = "gfs", type: list = ["rai
         headers[0]["Referer"] = i["link"]
         send_message(id, "16")
         req = session.get(i["link"],headers=headers[0])
-        print(str(req.content))
-        send_message(id, str(req.content))
+        send_message(id, str(req.content)[0,10])
         try:
             with open(str(i["run"])+".png", "wb") as f:
                 f.write(req.content)
