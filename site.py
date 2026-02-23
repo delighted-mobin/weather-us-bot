@@ -122,7 +122,7 @@ def get_web(state: str = "mazandaran", model: str = "gfs", type: list = ["rain",
         link_lit.append({"link": f"{link}/{d.year}{d.month:02}{d.day:02}-{rr:02}00z.html", "run": i})
         
     return link_lit
-
+#---------------------------------------------------------
 
 def create_map(state: str = "mazandaran", model: str = "gfs", type: list = ["rain","total"], tm: int = 24, interval: int = 6):
     links = get_type(state,model,type,tm,interval)
@@ -201,8 +201,26 @@ def create_map(state: str = "mazandaran", model: str = "gfs", type: list = ["rai
 #-------------------------- TELEGRAM BOT ----------------------------
 
 def send_message(chat_id, text):
+
+    media = [
+        {"type": "photo", "media": "attach://photo1"},
+        {"type": "photo", "media": "attach://photo2"}
+    ]
+
+    files = {
+        "photo1": open("data\\1.png", "rb"),
+        "photo2": open("data\\6.png", "rb")
+    }
+
     try:
-        requests.post(f"{TELEGRAM_API}/sendMessage", json={"chat_id": chat_id, "text": text}, timeout=10)
+        requests.post(f"{TELEGRAM_API}/sendMessage", json={
+            "chat_id": chat_id,
+            "text": text, 
+            "media": json.dumps(media)
+            },
+            files=files, 
+            timeout=10 
+        )
     except Exception as e:
         print("Error sending message:", e)
 
@@ -230,6 +248,7 @@ def webhook():
         return
     
     if msg.type == "private":
+        create_map()
         send_message(msg.chat_id, "ok")
 
     return jsonify(ok=True)
