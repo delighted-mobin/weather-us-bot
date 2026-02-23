@@ -204,10 +204,10 @@ def create_map(state: str = "mazandaran", model: str = "gfs", type: list = ["rai
         headers[0]["Referer"] = i["link"]
         send_message(id, "16")
         req = session.get(i["link"],headers=headers[0])
-        with open("saves\\"+str(i["run"])+".png", "wb") as f:
+        with open(str(i["run"])+".png", "wb") as f:
             f.write(req.content)
         send_message(id, "17")
-        background = Image.open("saves\\"+str(i["run"])+".png")  
+        background = Image.open(str(i["run"])+".png")  
         overlay = Image.open(f"data\\{type[0]}_layout.png")
         borders = Image.open("data\\borders.png")
 
@@ -215,7 +215,7 @@ def create_map(state: str = "mazandaran", model: str = "gfs", type: list = ["rai
         combined = Image.alpha_composite(background.convert("RGBA"), overlay.convert("RGBA"))
         combined2 = Image.alpha_composite(combined.convert("RGBA"), borders.convert("RGBA"))
 
-        combined2.save("saves\\"+str(i["run"])+".png")
+        combined2.save(str(i["run"])+".png")
         send_message(id, "18")
 
 #-------------------------- TELEGRAM BOT ----------------------------
